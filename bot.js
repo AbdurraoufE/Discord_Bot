@@ -1,8 +1,15 @@
 require('dotenv').config();
 
 const axios = require('axios');
-const {Client, GatewayIntentBits} = require("discord.js");
-const client = new Client({intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]});
+const {Client, GatewayIntentBits, EmbedBuilder} = require("discord.js");
+const Discord = require("discord.js");
+const client = new Client({intents:[GatewayIntentBits.Guilds, 
+                                    GatewayIntentBits.GuildMessages, 
+                                    GatewayIntentBits.MessageContent,
+                                    GatewayIntentBits.GuildMessageReactions, 
+                                    GatewayIntentBits.GuildMembers, 
+                                    GatewayIntentBits.GuildMessageTyping
+]});
 
 //prefix for the bot to use
 const prefix = "/";
@@ -28,6 +35,7 @@ const listDare = [
     "Let another player draw a washable marker mustache on you."
 ]
 
+const suggestions = [];
 client.on("messageCreate", (message) =>{
     if (!message.content.startsWith(prefix) || message.author.bot) return;
     
@@ -52,6 +60,32 @@ client.on("messageCreate", (message) =>{
     if (command == "dare"){
         const randomDare = listDare[Math.floor(Math.random() * listDare.length)];
         message.reply(randomDare);
+    }
+
+    if (command === "suggest"){
+        const suggestion = args.join(" ");
+        if(!suggestion){
+            message.reply(`${client.user.tag} Please add a suggestion by using the right format!`);
+            return;
+        }
+
+        //embed display the suggestion to discord:
+        const suggestionDisplay = new Discord.EmbedBuilder()
+        .setColor('#ae70ff')
+        .setAuthor(message.author.tag, message.author.displayAvatarURL()) // error fix
+        .setDescription(suggestion)
+        .setThumbnail(client.user.displayAvatarURL) //small image of the bots logo
+        .addField("Thumbs Up 👍", "0", true)
+        .addField("Thumbs Down 👎", "0", true)
+        .setTimestamp(Date.now())
+
+        message.channel.send({ embeds: [suggestionDisplay] }).then(sendEmbed =>{
+            sendEmbed.react("👍");
+            sendEmbed.react("👎");
+
+            suggestions.push({embed: sendEmbed, author: message.author.id });
+
+        }).catch(console.error);
     }
 });
 
