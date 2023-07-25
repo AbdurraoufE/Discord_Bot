@@ -12,6 +12,22 @@ client.once("ready", () =>{
     console.log(`Logged in as ${client.user.tag}!`);
 });
 
+const listTruth = [
+    "What was your biggest childhood fear?",
+    "What is the worst grade you received for a class in school/college?",
+    "What is the biggest lie you’ve ever told?",
+    "What is the worst physical pain you’ve ever been in?",
+    "What sport or hobby do you wish you would’ve picked up as a child?"
+]
+
+const listDare = [
+    "Hold the plank position until it’s your turn again.",
+    "Show off your best dance moves for the full duration of a song.",
+    "Show the group your internet search history.",
+    "How old are you? Whatever your age is, do that many squats.",
+    "Let another player draw a washable marker mustache on you."
+]
+
 client.on("messageCreate", (message) =>{
     if (!message.content.startsWith(prefix) || message.author.bot) return;
     
@@ -20,18 +36,22 @@ client.on("messageCreate", (message) =>{
 
     // command to roll a random dice number from 1-6
     if (command == "roll"){
+        //math logic
         const randomNumber = Math.floor(Math.random()*6) + 1;
-        message.reply("You have rolled number" `${randomNumber}`);
+        message.reply(`You have rolled number ${randomNumber}`);
     }
 
     // the truth command for Truth and Dare game
     if (command == "truth"){
-        message.reply("What is a weird food that you love?");
+        //select a random question from listTruth array
+        const randomTruth = listTruth[Math.floor(Math.random() * listTruth.length)];
+        message.reply(randomTruth);
     }
 
     // the dare command for Truth and Dare game
     if (command == "dare"){
-        message.reply("Do as many push-ups as you can in one minute");
+        const randomDare = listDare[Math.floor(Math.random() * listDare.length)];
+        message.reply(randomDare);
     }
 });
 
