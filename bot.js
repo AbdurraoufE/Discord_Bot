@@ -43,7 +43,7 @@ client.on("messageCreate", (message) =>{
     const command = args.shift().toLowerCase();
 
     // command to roll a random dice number from 1-6
-    if (command == "roll"){
+    if (command == "dice" || command == "roll"){
         //math logic
         const randomNumber = Math.floor(Math.random()*6) + 1;
         message.reply(`You have rolled number ${randomNumber}`);
@@ -63,21 +63,21 @@ client.on("messageCreate", (message) =>{
     }
 
     if (command === "suggest"){
-        const suggestion = args.join(" ");
+        const suggestion = args.join(" "); //assume all suggestions are going to be strings
         if(!suggestion){
-            message.reply(`${client.user.tag} Please add a suggestion by using the right format!`);
+            message.reply("Please add a suggestion by using the right format! (/suggest [suggestion]");
             return;
         }
 
         //embed display the suggestion to discord:
         const suggestionDisplay = new Discord.EmbedBuilder()
         .setColor('#ae70ff')
-        .setAuthor(message.author.tag, message.author.displayAvatarURL()) // error fix
+        // .setAuthor(message.author.tag, message.author.displayAvatarURL()) // error fix
         .setDescription(suggestion)
-        .setThumbnail(client.user.displayAvatarURL) //small image of the bots logo
+        .setThumbnail(client.user.displayAvatarURL()) //small image of the bots logo
         .addField("Thumbs Up 👍", "0", true)
         .addField("Thumbs Down 👎", "0", true)
-        .setTimestamp(Date.now())
+        .setTimestamp(Date.now());
 
         message.channel.send({ embeds: [suggestionDisplay] }).then(sendEmbed =>{
             sendEmbed.react("👍");
